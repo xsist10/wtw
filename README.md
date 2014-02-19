@@ -20,28 +20,28 @@ Via Composer
 
 ## Usage
 
-``` php
+``` bash
 $ ./wtw.phar script.php
 ```
 
 Change the search engine
-``` php
+``` bash
 $ ./wtw.phar script.php --search=StackOverflow
 $ ./wtw.phar script.php --search=DuckDuckGo
 ```
 
 Catch strict messages
-``` php
+``` bash
 $ ./wtw.phar script.php -s
 ```
 
 Catch warnings
-``` php
+``` bash
 $ ./wtw.phar script.php -w
 ```
 
 Catch deprecated notices
-``` php
+``` bash
 $ ./wtw.phar script.php -d
 ```
 
