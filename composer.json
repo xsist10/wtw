@@ -1,0 +1,19 @@
+{
+    "name": "xsist10/wtw",
+    "description": "Whatthewhat clonse for PHP",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Thomas Shone",
+            "email": "xsist10@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "aura/cli": "2.*@dev"
+    },
+    "autoload": {
+        "psr-4": { "Xsist10\\WTW\\": "src/" }
+    },
+    "bin": ["bin/wtw"]
+}

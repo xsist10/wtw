@@ -1,0 +1,23 @@
+{
+    "files": [
+        "vendor/aura/cli/src/CliFactory.php",
+        "vendor/aura/cli/src/Context/AbstractValues.php",
+        "vendor/aura/cli/src/Context/Env.php",
+        "vendor/aura/cli/src/Context/Server.php",
+        "vendor/aura/cli/src/Context/Argv.php",
+        "vendor/aura/cli/src/Context/Getopt.php",
+        "vendor/aura/cli/src/Context.php",
+        "vendor/aura/cli/src/Stdio.php",
+        "vendor/aura/cli/src/Stdio/Handle.php",
+        "vendor/aura/cli/src/Stdio/Formatter.php",
+        "vendor/aura/cli/src/Status.php",
+        "src/Search/SearchAdapter.php",
+        "src/Search/StackOverflow.php",
+        "src/Search/DuckDuckGo.php",
+        "src/Search/Google.php",
+        "src/ErrorManager.php"
+    ],
+    "main": "bin/wtw",
+    "output": "wtw.phar",
+    "stub": true
+}
