@@ -69,7 +69,7 @@ if ($options->get('--help')) {
     exit(Status::USAGE);
 }
 
-$file = realpath($options->get(1));
+$file = $options->get(1);
 if ($file == NULL || !is_readable($file)) {
     $stdio->errln("<<red>>Please provide a script to execute.<<reset>>");
     usage($stdio);
@@ -114,8 +114,8 @@ if ($options->get('--deprecated', false)) {
         ->addLevel(E_USER_DEPRECATED);
 }
 
-$errorManager->register();
-$errorManager->handleExceptions();
+//$errorManager->register();
+//$errorManager->handleExceptions();
 
 chdir(dirname($file));
 require_once $file;
