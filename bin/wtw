@@ -5,27 +5,11 @@ if (PHP_SAPI !== 'cli') {
     echo 'Warning: Should be invoked via the CLI version of PHP, not the ' . PHP_SAPI . ' SAPI' . PHP_EOL;
 }
 
-// Load manually so we don't conflict with any other composer autoloader that might be needed
-require_once('vendor/aura/cli/src/CliFactory.php');
-require_once('vendor/aura/cli/src/Context/AbstractValues.php');
-require_once('vendor/aura/cli/src/Context/Env.php');
-require_once('vendor/aura/cli/src/Context/Server.php');
-require_once('vendor/aura/cli/src/Context/Argv.php');
-require_once('vendor/aura/cli/src/Context/Getopt.php');
-require_once('vendor/aura/cli/src/Context.php');
-require_once('vendor/aura/cli/src/Stdio.php');
-require_once('vendor/aura/cli/src/Stdio/Handle.php');
-require_once('vendor/aura/cli/src/Stdio/Formatter.php');
-require_once('vendor/aura/cli/src/Status.php');
-require_once('src/Search/SearchAdapter.php');
-require_once('src/Search/StackOverflow.php');
-require_once('src/Search/DuckDuckGo.php');
-require_once('src/Search/Google.php');
-require_once('src/ErrorManager.php');
+require_once('vendor/autoload.php');
 
 use Aura\Cli\CliFactory;
 use Aura\Cli\Status;
-use Xsist10\WTW\ErrorManager;
+use Xsist10\WTW\DumpManager;
 
 function usage($stdio)
 {
@@ -34,9 +18,6 @@ function usage($stdio)
     $stdio->outln("");
     $stdio->outln("Flags:");
     $stdio->outln("-h|--help       - Display this message");
-    $stdio->outln("-w|--warning    - Enable warning detection");
-    $stdio->outln("-s|--strict     - Enable strict detection");
-    $stdio->outln("-d|--deprecated - Enable deprecated detection");
     $stdio->outln("--search=engine - Which search engine to use (Google|StackOverflow|DuckDuckGo)");
     $stdio->outln("");
 }
@@ -46,9 +27,6 @@ $context = $cli_factory->newContext($GLOBALS);
 $stdio = $cli_factory->newStdio();
 
 $options = array(
-    'warning,w',
-    'strict,s',
-    'deprecated,d',
     'help,h',
     'search:'
 );
@@ -83,38 +61,29 @@ if (!class_exists($searchClass)) {
     exit(Status::USAGE);
 }
 
-$errorManager = new ErrorManager(new $searchClass());
-$errorManager->addLevel(E_ERROR)
-    ->addLevel(E_PARSE)
-    ->addLevel(E_CORE_ERROR)
-    ->addLevel(E_COMPILE_ERROR)
-    ->addLevel(E_USER_ERROR);
+$dumpManager = new DumpManager(new $searchClass());
 
-if ($options->get('--warning', false)) {
-    $errorManager->addLevel(E_WARNING)
-        ->addLevel(E_CORE_WARNING)
-        ->addLevel(E_COMPILE_WARNING)
-        ->addLevel(E_USER_WARNING);
+$pipes = array();
+$proc = proc_open(
+    "php -f " . escapeshellcmd($file),
+    array(
+        0 => array('pipe', 'r'),
+        1 => array('pipe', 'w'),
+        2 => array('pipe', 'w')
+    ),
+    $pipes,
+    dirname($file)
+);
+stream_set_blocking($pipes[2], 0);
+
+$stdout = stream_get_contents($pipes[1]);
+fclose($pipes[1]);
+$stderr = stream_get_contents($pipes[2]);
+fclose($pipes[2]);
+
+echo $stdout ."\n";
+echo $stderr ."\n";
+
+if ($stderr) {
+    $dumpManager->process($stderr);
 }
-
-if ($options->get('--strict', false)) {
-    $errorManager->addLevel(E_WARNING)
-    ->addLevel(E_NOTICE)
-    ->addLevel(E_CORE_WARNING)
-    ->addLevel(E_COMPILE_WARNING)
-    ->addLevel(E_USER_WARNING)
-    ->addLevel(E_USER_NOTICE)
-    ->addLevel(E_STRICT)
-    ->addLevel(E_RECOVERABLE_ERROR);
-}
-
-if ($options->get('--deprecated', false)) {
-    $errorManager->addLevel(E_DEPRECATED)
-        ->addLevel(E_USER_DEPRECATED);
-}
-
-$errorManager->register();
-$errorManager->handleExceptions();
-
-chdir(dirname($file));
-require_once $file;

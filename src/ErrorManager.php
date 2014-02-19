@@ -5,20 +5,12 @@ namespace Xsist10\WTW;
 use Xsist10\WTW\Search\SearchAdapter;
 use \Exception;
 
-class ErrorManager
+class ErrorManager extends DumpManager
 {
-    const SEARCH_ENGINE = 'https://www.google.com';
-    const Exceptions = 0;
-
+    /**
+     * @var array
+     */
     private $logLevels = array();
-    private $handleExceptions = false;
-
-    private $searchEngine = null;
-
-    public function __construct(SearchAdapter $searchEngine)
-    {
-        $this->searchEngine = $searchEngine;
-    }
 
     public function addLevel($logLevel)
     {
@@ -37,30 +29,18 @@ class ErrorManager
         register_shutdown_function(array($this, "shutdown"));
     }
 
-    private function launchBrowser($url)
-    {
-        if (defined('PHP_WINDOWS_VERSION_MAJOR'))
-        {
-            exec('start "" ' . escapeshellarg($url));
-        }
-        else
-        {
-            exec('xdg-open ' . escapeshellarg($url));
-        }
-    }
-
     public function error($errorNumber, $errString, $errFile, $errLine)
     {
         if (in_array($errorNumber, $this->logLevels))
         {
-            $this->launchBrowser($this->searchEngine->buildSearchUrl($errString));
+            $this->process($errString);
             exit(1);
         }
     }
 
     public function exception(Exception $exception)
     {
-        $this->launchBrowser($this->searchEngine->buildSearchUrl($exception->getMessage()));
+        $this->process($exception->getMessage());
         exit(1);
     }
 

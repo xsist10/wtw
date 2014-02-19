@@ -15,9 +15,10 @@
         "src/Search/StackOverflow.php",
         "src/Search/DuckDuckGo.php",
         "src/Search/Google.php",
-        "src/DumpManager.php"
+        "src/DumpManager.php",
+        "src/ErrorManager.php"
     ],
-    "main": "bin/wtw",
-    "output": "wtw.phar",
+    "main": "bin/wtw-inline",
+    "output": "wtw-inline.phar",
     "stub": true
 }

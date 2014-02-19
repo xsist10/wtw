@@ -5,6 +5,19 @@
 A PHP clone of [WhatTheWhat](https://github.com/dhellmann/whatthewhat).
 
 
+# Flavours
+
+## Inline
+
+This script loads the WhatTheWhat checker inline with your code so you can set levels on what kind of errors you're looking for.
+This can cause problems with code conflicts or autoloading issues.
+
+## Dump
+
+This script takes the standard error of the script and checks that. No chance of code conflicts but does not have the refined control of the inline version.
+
+# Getting Started
+
 ## Install
 
 Via Composer
@@ -17,32 +30,42 @@ Via Composer
 }
 ```
 
+Direct Download
+
+``` bash
+wget https://github.com/xsist10/wtw/raw/master/wtw.phar
+wget https://github.com/xsist10/wtw/raw/master/wtw-inline.phar
+```
 
 ## Usage
 
 ``` bash
 $ ./wtw.phar script.php
+$ ./wtw-inline.phar script.php
 ```
 
 Change the search engine
 ``` bash
 $ ./wtw.phar script.php --search=StackOverflow
 $ ./wtw.phar script.php --search=DuckDuckGo
+
+$ ./wtw-inline.phar script.php --search=StackOverflow
+$ ./wtw-inline.phar script.php --search=DuckDuckGo
 ```
 
 Catch strict messages
 ``` bash
-$ ./wtw.phar script.php -s
+$ ./wtw-inline.phar script.php -s
 ```
 
 Catch warnings
 ``` bash
-$ ./wtw.phar script.php -w
+$ ./wtw-inline.phar script.php -w
 ```
 
 Catch deprecated notices
 ``` bash
-$ ./wtw.phar script.php -d
+$ ./wtw-inline.phar script.php -d
 ```
 
 
